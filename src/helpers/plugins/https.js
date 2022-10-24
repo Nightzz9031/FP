@@ -16,4 +16,17 @@ const get = async (url) => {
   return res.json();
 };
 
-  export { post, get };
+const remove = async (url) => {
+  const options = {
+    method: 'DELETE',
+    headers: {
+      'content-type': 'application/json',
+    },
+  };
+
+  const res = await fetch(`http://localhost:4000/${url}`, options);
+
+  return res.json();
+};
+
+  export { post, get, remove };

@@ -5,18 +5,21 @@ const express = require('express');
 const router = express.Router();
 
 const {
- emailValid, passwordsValid, userValid,
+ emailValid, passwordsValid, userValid, secretValid,
 } = require('../middleware/mainMiddleware');
 
 const {
- getRecipes, addRecipe, findOne, register, login,
+ getRecipes, addRecipe, findOne, register, login, getAvatar, deleteOne,
 } = require('../controllers/mainController');
 
 router.get('/fetchallrecipes', getRecipes);
 router.post('/createRecipe', addRecipe);
-router.get('/recipe/:id', findOne);
+router.get('/delete/:id', deleteOne);
+router.get('/recipe/:search', findOne);
 
 router.post('/register', emailValid, passwordsValid, userValid, register);
 router.post('/login', login);
+
+router.get('/getAvatar/:secret', secretValid, getAvatar);
 
 module.exports = router;

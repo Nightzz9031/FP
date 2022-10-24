@@ -4,12 +4,17 @@ import {
  TextField, Paper, Typography, Button,
 } from '@mui/material';
 import { Box } from '@mui/system';
+import { useNavigate } from 'react-router-dom';
 import { post } from '../../../../helpers/plugins/https';
 
 const LoginForm = () => {
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
+    const [msg, setMsg] = React.useState('');
 
+    const nav = useNavigate();
+
+    // eslint-disable-next-line consistent-return
     const login = async (e) => {
       e.preventDefault();
       const user = {
@@ -18,6 +23,14 @@ const LoginForm = () => {
       };
 
       const data = await post('login', user);
+
+      if (!data.error) {
+        console.log(data.message);
+        setMsg(data.message);
+
+        localStorage.setItem('secret', data.data.secret);
+        return nav('/');
+      }
       console.log(data);
     };
 
@@ -46,6 +59,7 @@ const LoginForm = () => {
           // onSubmit={console.log('========')}
         >
           <Typography component="h1" variant="h4" align="center">Login</Typography>
+          <h1>{msg}</h1>
           <Box sx={{
                     height: '100vh',
                     display: 'grid',

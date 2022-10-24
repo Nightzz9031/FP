@@ -3,6 +3,7 @@ import {
  TextField, Paper, Typography, Button,
 } from '@mui/material';
 import { Box } from '@mui/system';
+import { useNavigate } from 'react-router-dom';
 import { post } from '../../../../helpers/plugins/https';
 
 const RegisterForm = () => {
@@ -11,6 +12,9 @@ const RegisterForm = () => {
     const [passwordTwo, setPasswordTwo] = React.useState('');
     const [avatar, setAvatar] = React.useState('');
 
+    const nav = useNavigate();
+
+    // eslint-disable-next-line consistent-return
     const validateUser = async (e) => {
         e.preventDefault();
         const user = {
@@ -22,28 +26,12 @@ const RegisterForm = () => {
 
         const data = await post('register', user);
 
+        if (!data.error) {
+          console.log(data.message);
+          return nav('/auth/login');
+        }
+
         console.log(data);
-      };
-
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const createUser = async (e) => {
-        e.preventDefault();
-        const user = {
-          email,
-          password: passwordOne,
-          avatar,
-
-        };
-
-        const res = await post('createUser', user);
-
-        console.log(`User added: ${res}`);
-      };
-
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const submitHandler = async () => {
-        await validateUser();
-        await createUser();
       };
 
     return (

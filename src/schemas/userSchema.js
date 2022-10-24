@@ -11,9 +11,17 @@ const userSchema = new Schema({
     type: String,
     required: true,
   },
+  secret: {
+    type: String,
+    require: true,
+  },
   avatar: {
     type: String,
     required: true,
+  },
+  favorites: {
+    type: Array,
+    required: false,
   },
 });
 

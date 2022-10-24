@@ -42,4 +42,14 @@ module.exports = {
         next();
     },
 
+    secretValid: async (req, res, next) => {
+        const { secret } = req.params;
+
+        const userExists = await userSchema.findOne({ secret });
+
+        if (!userExists) return sendRes(res, true, 'Bad user secret', null);
+
+        next();
+    },
+
 };

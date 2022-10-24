@@ -2,6 +2,8 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable new-cap */
 
+const bcrypt = require('bcrypt');
+const { uid } = require('uid');
 const exportRecipe = require('../schemas/recipeSchema');
 const recipeSchema = require('../schemas/recipeSchema');
 // const exportUser = require('../schemas/userSchema');
@@ -16,7 +18,7 @@ module.exports = {
     res.send({ recipe: newRecipe });
   },
 
-  getRecipes: async (req, res) => {
+  getRecipes: (req, res) => {
     exportRecipe.find((err, val) => {
       if (err) {
         console.log(err);
@@ -29,9 +31,12 @@ module.exports = {
   register: async (req, res) => {
     const { email, password, avatar } = req.body;
 
+    const hash = await bcrypt.hash(password, 10);
+
     new userSchema({
       email,
-      password,
+      password: hash,
+      secret: uid(),
       avatar,
     }).save().then(() => {
       sendRes(res, false, 'All good', null);
@@ -41,25 +46,36 @@ module.exports = {
   login: async (req, res) => {
     const { email, password } = req.body;
 
-    const userExists = await userSchema.findOne({ email, password });
+    const userExists = await userSchema.findOne({ email });
 
-    if (userExists) return sendRes(res, false, 'All good', userExists);
+    if (userExists) {
+      const compare = await bcrypt.compare(password, userExists.password);
+
+      if (compare) return sendRes(res, false, 'All good', { secret: userExists.secret });
+    }
 
     sendRes(res, true, 'Bad credentials', null);
   },
+  getAvatar: async (req, res) => {
+    const { secret } = req.params;
+
+    const user = await userSchema.findOne({ secret });
+
+    return sendRes(res, false, 'All good', { photo: user.avatar });
+  },
 
   findOne: async (req, res) => {
+    const { search } = req.params;
+
+    const oneRecipe = await recipeSchema.find({ title: { $regex: search } });
+    return sendRes(res, false, 'All good', oneRecipe);
+  },
+
+  deleteOne: async (req, res) => {
     const { id } = req.params;
-    console.log(id);
 
-    const oneRecipe = await exportRecipe.findById({ _id: id });
-    res.send({
-      ok: 'ok',
-      oneRecipe,
-    });
+    const deletedRecipe = await recipeSchema.findOneAndRemove(id);
+    return sendRes(res, false, 'Recipe deleted', deletedRecipe);
   },
 
-  info: async (req, res) => {
-    res.send({ body: req.body });
-  },
 };
