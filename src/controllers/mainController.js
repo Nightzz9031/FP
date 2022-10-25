@@ -39,7 +39,7 @@ module.exports = {
       secret: uid(),
       avatar,
     }).save().then(() => {
-      sendRes(res, false, 'All good', null);
+      sendRes(res, false, 'Registered successfully', null);
     });
   },
 
@@ -56,19 +56,12 @@ module.exports = {
 
     sendRes(res, true, 'Bad credentials', null);
   },
-  getAvatar: async (req, res) => {
-    const { secret } = req.params;
-
-    const user = await userSchema.findOne({ secret });
-
-    return sendRes(res, false, 'All good', { photo: user.avatar });
-  },
 
   findOne: async (req, res) => {
     const { search } = req.params;
 
     const oneRecipe = await recipeSchema.find({ title: { $regex: search } });
-    return sendRes(res, false, 'All good', oneRecipe);
+    return sendRes(res, false, 'Found one recipe', oneRecipe);
   },
 
   deleteOne: async (req, res) => {
@@ -76,6 +69,22 @@ module.exports = {
 
     const deletedRecipe = await recipeSchema.findOneAndRemove(id);
     return sendRes(res, false, 'Recipe deleted', deletedRecipe);
+  },
+
+  getSecret: async (req, res) => {
+    const { secret } = req.params;
+
+    const mysecret = await recipeSchema.find({ secret });
+
+    return sendRes(res, false, 'Secret found', mysecret.secret);
+  },
+
+  getAvatar: async (req, res) => {
+    const { secret } = req.params;
+
+    const user = await userSchema.findOne({ secret });
+
+    return sendRes(res, false, 'Found avatar', user.avatar);
   },
 
 };

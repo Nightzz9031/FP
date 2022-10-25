@@ -12,6 +12,8 @@ const LoginForm = () => {
     const [password, setPassword] = React.useState('');
     const [msg, setMsg] = React.useState('');
 
+    const checkRef = React.useRef();
+
     const nav = useNavigate();
 
     // eslint-disable-next-line consistent-return
@@ -28,11 +30,28 @@ const LoginForm = () => {
         console.log(data.message);
         setMsg(data.message);
 
-        localStorage.setItem('secret', data.data.secret);
+          localStorage.setItem('secret', data.data.secret);
+
+        if (checkRef) {
+          localStorage.setItem('rememberMe', true);
+        }
+
         return nav('/');
       }
       console.log(data);
     };
+
+    const checkRememberMe = () => {
+      const rememberMe = localStorage.getItem('rememberMe');
+
+      if (rememberMe) {
+        nav('/');
+      }
+    };
+
+    React.useEffect(() => {
+      checkRememberMe();
+    });
 
     return (
       <Box sx={{
@@ -86,6 +105,11 @@ const LoginForm = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <p>
+              Remember me:
+              <input type="checkbox" ref={checkRef} />
+            </p>
+
             <Button
               variant="contained"
               type="submit"

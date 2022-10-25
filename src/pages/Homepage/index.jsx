@@ -30,7 +30,13 @@ const HomePage = () => {
   const findRecipe = async () => {
       const res = await get('fetchallrecipes');
       setRecipes([...res]);
-      console.log(res);
+  };
+
+  const validateSecret = async (secret) => {
+    if (secret) {
+    // eslint-disable-next-line @typescript-eslint/quotes, @typescript-eslint/space-infix-ops, prefer-template
+    const res = await get(`getSecret/`+secret);
+    }
   };
 
   const searchRecipe = async (searchTerm, e) => {
@@ -54,6 +60,7 @@ const HomePage = () => {
   };
   React.useEffect(() => {
     findRecipe();
+    validateSecret();
   }, []);
 
   const addRecipe = async () => {

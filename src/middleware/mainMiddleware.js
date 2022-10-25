@@ -7,14 +7,14 @@ const sendRes = require('../modules/universalRes');
 module.exports = {
     emailValid: (req, res, next) => {
         const { email } = req.body;
-        if (!isEmail(email)) return sendRes(res, true, 'bad email', null);
+        if (!isEmail(email)) return sendRes(res, true, 'Bad email format', null);
         next();
     },
     passwordsValid: (req, res, next) => {
         const { password, passwordTwo } = req.body;
 
-        if (password !== passwordTwo) return sendRes(res, true, 'passwords do not match', null);
-        if (passwordTwo.length < 5 || passwordTwo.length > 20) return sendRes(res, true, 'bad password length', null);
+        if (password !== passwordTwo) return sendRes(res, true, 'Passwords do not match', null);
+        if (passwordTwo.length < 5 || passwordTwo.length > 20) return sendRes(res, true, 'Bad password length', null);
 
         next();
     },
@@ -26,7 +26,7 @@ module.exports = {
         console.log(userExists);
 
         if (userExists) {
-            return sendRes(res, true, 'user already exists', null);
+            return sendRes(res, true, 'User already exists', null);
         }
 
         next();
@@ -36,7 +36,7 @@ module.exports = {
         const { avatar } = req.body;
 
         if (!avatar) {
-            return res.send({ error: true, message: 'please enter a valid avatar' });
+            return res.send({ error: true, message: 'Please enter a valid avatar URL' });
         }
 
         next();

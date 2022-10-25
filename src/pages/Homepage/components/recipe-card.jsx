@@ -5,6 +5,9 @@ import {
  Card, CardActions, CardContent, CardMedia, Button, Typography,
 } from '@mui/material/';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import StarRating from '../../../components/star-rating';
 import { get, remove } from '../../../helpers/plugins/https';
 
 const RecipeCard = ({
@@ -18,7 +21,7 @@ const RecipeCard = ({
     console.log('Title: ', cardID);
     console.log('DB response: ', res);
     console.log('New state: ', data);
-};
+  };
 
   return (
     <Card sx={{
@@ -57,11 +60,12 @@ const RecipeCard = ({
           {description}
         </Typography>
       </CardContent>
-
+      <StarRating />
       <CardActions sx={{ justifyContent: 'space-between' }}>
         <Button variant="contained" size="small">View recipe</Button>
-        <DeleteOutlineIcon onClick={() => deleteRecipe()} sx={{ backgroundColor: 'error' }} />
+        <DeleteOutlineIcon onDoubleClick={() => deleteRecipe()} sx={{ backgroundColor: 'error' }} />
         <Button variant="contained" size="small">Add to favorites</Button>
+
       </CardActions>
 
     </Card>

@@ -28,6 +28,8 @@ const RegisterForm = () => {
 
         if (!data.error) {
           console.log(data.message);
+          localStorage.removeItem('secret');
+          localStorage.removeItem('rememberMe');
           return nav('/auth/login');
         }
 

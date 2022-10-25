@@ -1,16 +1,24 @@
+/* eslint-disable consistent-return */
+/* eslint-disable max-len */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 import MenuIcon from '@mui/icons-material/Menu';
 import AdbIcon from '@mui/icons-material/Adb';
+import { useNavigate } from 'react-router-dom';
 import {
   Tooltip, Button, Avatar, Container, Menu, Typography, IconButton, Toolbar, Box, AppBar, MenuItem,
 } from '@mui/material';
-
-const pages = ['Favorites'];
-const settings = ['Profile', 'Logout'];
+import { get, post } from '../helpers/plugins/https';
 
 const ResponsiveAppBar = () => {
+  const pages = ['Favorites'];
+  const nav = useNavigate();
+
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const [loginState, setLoginState] = React.useState();
+  const [settings, setSettings] = React.useState(['Logout']);
+  const [avatar, setAvatar] = React.useState('');
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -26,6 +34,54 @@ const ResponsiveAppBar = () => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+
+  const validateSecret = async (secret) => {
+    if (secret) {
+    // eslint-disable-next-line @typescript-eslint/quotes, @typescript-eslint/space-infix-ops, prefer-template
+    const res = await get(`getSecret/`+secret);
+    return res;
+    }
+  };
+
+  const profileAvatar = async () => {
+    const secret = localStorage.getItem('secret');
+    if (validateSecret(secret)) {
+    // eslint-disable-next-line @typescript-eslint/quotes, @typescript-eslint/space-infix-ops, prefer-template
+    const res = await get(`getAvatar/`+secret);
+    setAvatar(res.data);
+    }
+  };
+
+  const settingsAction = () => {
+    handleCloseUserMenu();
+
+    if (loginState) {
+      localStorage.removeItem('secret');
+      localStorage.removeItem('rememberMe');
+      setSettings(['Login']);
+      setLoginState(false);
+      setAvatar('');
+    } else if (!loginState) {
+      nav('auth/login');
+    }
+  };
+
+  const checkLoginStatus = () => {
+    const secret = localStorage.getItem('secret');
+    if (secret) {
+      setSettings(['Logout']);
+      setLoginState(true);
+    } else {
+      setSettings(['Login']);
+      setLoginState(false);
+    }
+  };
+
+  React.useEffect(() => {
+    checkLoginStatus();
+    profileAvatar();
+    validateSecret();
+  }, []);
 
   return (
     <AppBar position="static" color="success">
@@ -118,7 +174,7 @@ const ResponsiveAppBar = () => {
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">
               <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                <Avatar alt="Profile avatar" src={avatar} />
               </IconButton>
             </Tooltip>
             <Menu
@@ -138,7 +194,7 @@ const ResponsiveAppBar = () => {
               onClose={handleCloseUserMenu}
             >
               {settings.map((setting) => (
-                <MenuItem key={setting} onClick={handleCloseUserMenu}>
+                <MenuItem key={setting} onClick={settingsAction}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}
