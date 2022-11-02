@@ -1,7 +1,7 @@
 {
   "name": "my-app",
   "version": "0.1.0",
-  "homepage": "https://nightzz9031.github.io/FP",
+  "homepage": "https://nightzz9031.github.io/",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.4",
@@ -16,6 +16,7 @@
     "bcrypt": "^5.1.0",
     "dom": "^0.0.3",
     "express": "^4.18.2",
+    "express-session": "^1.17.3",
     "formik": "^2.2.9",
     "is-email": "^1.0.2",
     "js-captcha": "^1.3.0",

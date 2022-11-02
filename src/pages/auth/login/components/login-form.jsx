@@ -8,11 +8,12 @@ import { useNavigate } from 'react-router-dom';
 import { post } from '../../../../helpers/plugins/https';
 
 const LoginForm = () => {
+  const secret = localStorage.getItem('secret');
     const [email, setEmail] = React.useState('');
     const [password, setPassword] = React.useState('');
     const [msg, setMsg] = React.useState('');
 
-    const checkRef = React.useRef();
+    const [check, setCheck] = React.useState();
 
     const nav = useNavigate();
 
@@ -32,7 +33,7 @@ const LoginForm = () => {
 
           localStorage.setItem('secret', data.data.secret);
 
-        if (checkRef) {
+        if (check) {
           localStorage.setItem('rememberMe', true);
         }
 
@@ -43,8 +44,9 @@ const LoginForm = () => {
 
     const checkRememberMe = () => {
       const rememberMe = localStorage.getItem('rememberMe');
+      console.log(secret);
 
-      if (rememberMe) {
+      if (secret && rememberMe) {
         nav('/');
       }
     };
@@ -58,7 +60,7 @@ const LoginForm = () => {
             height: '100vh',
             display: 'grid',
             placeItems: 'center',
-            backgroundImage: 'url(/register-bg.png)',
+            backgroundImage: 'url(https://images6.alphacoders.com/336/336514.jpg)',
             backgroundSize: '100%',
         }}
       >
@@ -67,15 +69,14 @@ const LoginForm = () => {
           sx={{
           display: 'flex',
           flexDirection: 'column',
-          gap: 2,
+          gap: 0,
           width: 450,
           height: 300,
           p: 2,
           borderRadius: '80px',
-          opacity: 0.85,
+          opacity: 0.75,
         }}
           elevation={10}
-          // onSubmit={console.log('========')}
         >
           <Typography component="h1" variant="h4" align="center">Login</Typography>
           <h1>{msg}</h1>
@@ -107,7 +108,7 @@ const LoginForm = () => {
             />
             <p>
               Remember me:
-              <input type="checkbox" ref={checkRef} />
+              <input type="checkbox" onChange={(e) => setCheck(e.target.checked)} />
             </p>
 
             <Button

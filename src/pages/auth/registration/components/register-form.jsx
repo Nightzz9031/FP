@@ -1,6 +1,6 @@
 import * as React from 'react';
 import {
- TextField, Paper, Typography, Button,
+ TextField, Paper, Button, Avatar,
 } from '@mui/material';
 import { Box } from '@mui/system';
 import { useNavigate } from 'react-router-dom';
@@ -41,7 +41,7 @@ const RegisterForm = () => {
             height: '100vh',
             display: 'grid',
             placeItems: 'center',
-            backgroundImage: 'url(/register-bg.png)',
+            backgroundImage: 'url(https://images6.alphacoders.com/336/336514.jpg)',
             backgroundSize: '100%',
         }}
       >
@@ -60,7 +60,10 @@ const RegisterForm = () => {
           elevation={10}
           onSubmit={validateUser}
         >
-          <Typography component="h1" variant="h4" align="center">Register</Typography>
+          <Box sx={{ m: 'auto' }}>
+            <Avatar alt="Profile avatar" src={avatar} sx={{ width: 120, height: 120 }} />
+          </Box>
+
           <Box sx={{
                     height: '100vh',
                     display: 'grid',

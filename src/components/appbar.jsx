@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable consistent-return */
 /* eslint-disable max-len */
 /* eslint-disable @typescript-eslint/no-unused-vars */
@@ -10,15 +11,17 @@ import {
 } from '@mui/material';
 import { get, post } from '../helpers/plugins/https';
 
-const ResponsiveAppBar = () => {
+const ResponsiveAppBar = ({ validateSecret }) => {
   const pages = ['Favorites'];
   const nav = useNavigate();
 
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
-  const [loginState, setLoginState] = React.useState();
-  const [settings, setSettings] = React.useState(['Logout']);
+  const [loginState, setLoginState] = React.useState(false);
   const [avatar, setAvatar] = React.useState('');
+  const [settings, setSettings] = React.useState(['Logout']);
+
+  const secret = localStorage.getItem('secret');
 
   const handleOpenNavMenu = (event) => {
     setAnchorElNav(event.currentTarget);
@@ -35,53 +38,45 @@ const ResponsiveAppBar = () => {
     setAnchorElUser(null);
   };
 
-  const validateSecret = async (secret) => {
-    if (secret) {
-    // eslint-disable-next-line @typescript-eslint/quotes, @typescript-eslint/space-infix-ops, prefer-template
-    const res = await get(`getSecret/`+secret);
-    return res;
-    }
-  };
-
   const profileAvatar = async () => {
-    const secret = localStorage.getItem('secret');
-    if (validateSecret(secret)) {
+    if (secret) {
     // eslint-disable-next-line @typescript-eslint/quotes, @typescript-eslint/space-infix-ops, prefer-template
     const res = await get(`getAvatar/`+secret);
     setAvatar(res.data);
     }
   };
 
-  const settingsAction = () => {
+  const settingsAction = (key) => {
     handleCloseUserMenu();
 
     if (loginState) {
       localStorage.removeItem('secret');
       localStorage.removeItem('rememberMe');
-      setSettings(['Login']);
+      setSettings(['Login', 'Register']);
       setLoginState(false);
       setAvatar('');
-    } else if (!loginState) {
+    } else if (!loginState && key === 'Login') {
       nav('auth/login');
+    } else if (!loginState && key === 'Register') {
+      nav('auth/register');
     }
   };
 
   const checkLoginStatus = () => {
-    const secret = localStorage.getItem('secret');
-    if (secret) {
+    if (loginState) {
       setSettings(['Logout']);
       setLoginState(true);
     } else {
-      setSettings(['Login']);
+      setSettings(['Login', 'Register']);
       setLoginState(false);
     }
   };
 
   React.useEffect(() => {
+    validateSecret(secret, setLoginState);
     checkLoginStatus();
     profileAvatar();
-    validateSecret();
-  }, []);
+  }, [loginState]);
 
   return (
     <AppBar position="static" color="success">
@@ -134,7 +129,7 @@ const ResponsiveAppBar = () => {
               }}
             >
               {pages.map((page) => (
-                <MenuItem key={page} onClick={handleCloseNavMenu}>
+                <MenuItem key={page}>
                   <Typography textAlign="center">{page}</Typography>
                 </MenuItem>
               ))}
@@ -193,8 +188,8 @@ const ResponsiveAppBar = () => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
-              {settings.map((setting) => (
-                <MenuItem key={setting} onClick={settingsAction}>
+              {settings.map((setting, i) => (
+                <MenuItem key={i} onClick={(e) => settingsAction(e.target.innerHTML)}>
                   <Typography textAlign="center">{setting}</Typography>
                 </MenuItem>
               ))}

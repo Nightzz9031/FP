@@ -23,6 +23,10 @@ const userSchema = new Schema({
     type: Array,
     required: false,
   },
+  admin: {
+    type: Boolean,
+    required: false,
+  },
 });
 
 const exportUser = mongoose.model('users', userSchema);

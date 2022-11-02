@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable max-len */
 import React from 'react';
@@ -5,23 +6,38 @@ import {
  Card, CardActions, CardContent, CardMedia, Button, Typography,
 } from '@mui/material/';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import StarRating from '../../../components/star-rating';
-import { get, remove } from '../../../helpers/plugins/https';
+import { useNavigate } from 'react-router-dom';
+import StarRating from './star-rating';
+import { get, post } from '../helpers/plugins/https';
 
 const RecipeCard = ({
  title, image, calories, sugar, description, diet, cardID, setState,
 }) => {
+  const secret = localStorage.getItem('secret');
+  const nav = useNavigate();
+
   const deleteRecipe = async () => {
     // eslint-disable-next-line @typescript-eslint/quotes, @typescript-eslint/space-infix-ops, prefer-template
     const res = await get(`delete/`+cardID);
     const data = await get('fetchallrecipes');
     setState([...data]);
-    console.log('Title: ', cardID);
-    console.log('DB response: ', res);
-    console.log('New state: ', data);
   };
+
+  const addFavorite = async () => {
+    const data = await get(`search/${title}`);
+    const recipe = data.data[0];
+    const res = await post(`addFavorite/${secret}`, { recipe });
+
+    return console.log(recipe, res);
+  };
+
+  const recipePage = async () => {
+    nav(`/recipe/${cardID}`);
+  };
+
+  React.useEffect(() => {
+
+  });
 
   return (
     <Card sx={{
@@ -62,9 +78,9 @@ const RecipeCard = ({
       </CardContent>
       <StarRating />
       <CardActions sx={{ justifyContent: 'space-between' }}>
-        <Button variant="contained" size="small">View recipe</Button>
+        <Button variant="contained" size="small" onClick={recipePage}>View recipe</Button>
         <DeleteOutlineIcon onDoubleClick={() => deleteRecipe()} sx={{ backgroundColor: 'error' }} />
-        <Button variant="contained" size="small">Add to favorites</Button>
+        <Button variant="contained" size="small" onClick={addFavorite}>Add to favorites</Button>
 
       </CardActions>
 

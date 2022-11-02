@@ -12,21 +12,14 @@ const post = async (url, data) => {
 };
 
 const get = async (url) => {
-  const res = await fetch(`http://localhost:4000/${url}`);
-  return res.json();
-};
-
-const remove = async (url) => {
   const options = {
-    method: 'DELETE',
+    method: 'GET',
     headers: {
       'content-type': 'application/json',
     },
   };
-
   const res = await fetch(`http://localhost:4000/${url}`, options);
-
   return res.json();
 };
 
-  export { post, get, remove };
+  export { post, get };

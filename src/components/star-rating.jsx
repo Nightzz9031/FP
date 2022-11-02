@@ -8,25 +8,31 @@ import '../styles/rating.scss';
 import { get, post } from '../helpers/plugins/https';
 
 const StarRating = () => {
-  const [rating, setRating] = useState(0);
+  const secret = localStorage.getItem('secret');
 
-  const validateSecret = async (secret) => {
-    if (secret) {
+  const [rating, setRating] = useState(0);
+  const [secretValid, setSecretValid] = useState(false);
+
+  const validateSecret = async () => {
     // eslint-disable-next-line @typescript-eslint/quotes, @typescript-eslint/space-infix-ops, prefer-template
     const res = await get(`getSecret/`+secret);
-    return res;
+    if (res.error === false) {
+    setSecretValid(true);
+  }
+  };
+
+  const ratingFunc = (index) => {
+    if (secretValid === true) {
+      setRating(index);
+    } else {
+      console.log('Please login to rate!');
     }
   };
 
-  const checkSecret = (index) => {
-    const secret = localStorage.getItem('secret');
+  React.useEffect(() => {
+    validateSecret();
+  }, []);
 
-    if (secret) {
-      setRating(index);
-    } else {
-      console.log('Please login to rate');
-    }
-    };
     return (
       <div className="star-rating">
         {[...Array(5)].map((star, index) => {
@@ -36,8 +42,7 @@ const StarRating = () => {
               type="button"
               key={index}
               className={index <= (rating) ? 'on' : 'off'}
-              onClick={() => checkSecret(index)}
-              onDoubleClick={() => { setRating(0); }}
+              onClick={() => ratingFunc(index)}
             >
               <span className="star">&#9733;</span>
             </button>

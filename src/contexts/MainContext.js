@@ -1,5 +1,7 @@
-import { createContext } from 'react';
+/* eslint-disable no-undef */
+import * as React from 'react';
 
-const MainContext = createContext();
+const MainContext = React.createContext();
+const LoginContext = React.createContext(null);
 
-export default MainContext;
+export default { MainContext, LoginContext };

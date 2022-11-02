@@ -5,49 +5,31 @@ import * as React from 'react';
 import { Box } from '@mui/material';
 import { get, post } from '../../helpers/plugins/https';
 import ResponsiveAppBar from '../../components/appbar';
-import RecipeCard from './components/recipe-card';
+import RecipeCard from '../../components/recipe-card';
+import { validateSecret, validateAdmin } from '../../helpers/plugins/validations';
+import RecipeCreator from '../../components/admin/addRecipe';
 
-const { uid } = require('uid');
+const secret = localStorage.getItem('secret');
 
 const HomePage = () => {
   const [recipes, setRecipes] = React.useState([]);
   const [searchFilter, setSearchFilter] = React.useState('');
+  const [loginState, setLoginState] = React.useState(false);
+  const [adminState, setAdminState] = React.useState(false);
 
   const cardVisibility = '';
-
-  const recipeRefs = {
-    title: React.useRef(),
-    calories: React.useRef(),
-    sugar: React.useRef(),
-    description: React.useRef(),
-    image: React.useRef(),
-    diet: React.useRef(),
-    recipe: React.useRef(),
-    ingredients: React.useRef(),
-    servings: React.useRef(),
-  };
 
   const findRecipe = async () => {
       const res = await get('fetchallrecipes');
       setRecipes([...res]);
   };
 
-  const validateSecret = async (secret) => {
-    if (secret) {
-    // eslint-disable-next-line @typescript-eslint/quotes, @typescript-eslint/space-infix-ops, prefer-template
-    const res = await get(`getSecret/`+secret);
-    }
-  };
-
   const searchRecipe = async (searchTerm, e) => {
     const upperCaseSearchTerm = searchTerm.charAt(0).toUpperCase() + searchTerm.slice(1);
     if (upperCaseSearchTerm.length > 1) {
       // eslint-disable-next-line @typescript-eslint/quotes, @typescript-eslint/space-infix-ops, prefer-template
-    const res = await get(`recipe/`+upperCaseSearchTerm);
+    const res = await get(`search/`+upperCaseSearchTerm);
     setRecipes(res.data);
-    console.log('My search: ', upperCaseSearchTerm);
-    console.log('DB response: ', res.data);
-    console.log('Current state: ', recipes);
     } else {
       findRecipe();
     }
@@ -58,50 +40,21 @@ const HomePage = () => {
       searchRecipe(searchFilter);
     }
   };
+
   React.useEffect(() => {
     findRecipe();
-    validateSecret();
-  }, []);
-
-  const addRecipe = async () => {
-    const recipe = {
-      id: uid(),
-      title: recipeRefs.title.current.value,
-      recipe: recipeRefs.recipe.current.value,
-      ingredients: recipeRefs.ingredients.current.value,
-      servings: recipeRefs.servings.current.value,
-      macros: {
-          calories: recipeRefs.calories.current.value,
-          sugar: recipeRefs.sugar.current.value,
-        },
-      description: recipeRefs.description.current.value,
-      image: recipeRefs.image.current.value,
-      diet: recipeRefs.diet.current.value,
-    };
-
-    const res = await post('createRecipe', recipe);
-
-    console.log(`Recipe added: ${res}`);
-  };
-
-  const clickHandler = () => {
-    addRecipe();
-    findRecipe();
-  };
+    validateAdmin(secret, setAdminState);
+    validateSecret(secret, setLoginState);
+  }, [loginState], [adminState], [recipes]);
 
   return (
     <>
-      <ResponsiveAppBar />
-      <input id="title" type="text" ref={recipeRefs.title} placeholder="Title" />
-      <input id="title" type="text" ref={recipeRefs.servings} placeholder="Servings" />
-      <input id="calories" type="text" ref={recipeRefs.calories} placeholder="Calories per serving" />
-      <input id="sugar" type="text" ref={recipeRefs.sugar} placeholder="Sugar per serving" />
-      <input id="description" type="text" ref={recipeRefs.description} placeholder="Description" />
-      <input id="img" type="text" ref={recipeRefs.image} placeholder="Image" />
-      <input id="diet" type="text" ref={recipeRefs.diet} placeholder="Diet" />
-      <input type="text" ref={recipeRefs.ingredients} placeholder="Ingredients" />
-      <input type="text" ref={recipeRefs.recipe} placeholder="Recipe" />
-      <button onClick={clickHandler}>ADD</button>
+      <ResponsiveAppBar validateSecret={validateSecret} />
+
+      { adminState ? (
+        <RecipeCreator />
+      ) : null }
+
       <Box sx={{
  width: '100vh', my: '5px', mx: 'auto',
 }}
