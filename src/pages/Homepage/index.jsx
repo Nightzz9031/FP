@@ -50,36 +50,38 @@ const HomePage = () => {
   return (
     <>
       <ResponsiveAppBar validateSecret={validateSecret} />
-
-      { adminState ? (
+      {adminState ? (
         <RecipeCreator />
-      ) : null }
+      ) : null}
+      <Box sx={{ backgroundImage: 'url(https://png.pngtree.com/png-vector/20191001/ourlarge/pngtree-fast-food-seamless-background-with-ice-cream-burger-chocolate-pizza-french-png-image_1770104.jpg)', backgroundRepeat: 'repeat' }}>
 
-      <Box sx={{
- width: '100vh', my: '5px', mx: 'auto',
-}}
-      >
-        <input type="text" placeholder="Search..." onChange={(e) => setSearchFilter(e.target.value)} onKeyDown={handleKeyDown} />
-      </Box>
-      <Box sx={{
- width: '100wh', height: 'auto', flexWrap: 'wrap', display: 'flex', visibility: cardVisibility,
-}}
-      >
-        {recipes.map((recipe, i) => (
-          <RecipeCard
-            key={i}
-            title={recipe.title}
-            image={recipe.image}
-            calories={recipe.macros.calories}
-            sugar={recipe.macros.sugar}
-            description={recipe.description}
-            diet={recipe.diet}
+        <Box sx={{
+        width: '100vh', my: '5px', mx: 'auto',
+      }}
+        >
+          <input type="text" placeholder="Search..." onChange={(e) => setSearchFilter(e.target.value)} onKeyDown={handleKeyDown} />
+        </Box>
+        <Box sx={{
+        width: '100wh', height: '100vh', flexWrap: 'wrap', display: 'flex', visibility: cardVisibility,
+      }}
+        >
+          {recipes.map((recipe, i) => (
+            <RecipeCard
+              key={i}
+              title={recipe.title}
+              image={recipe.image}
+              calories={recipe.macros.calories}
+              sugar={recipe.macros.sugar}
+              description={recipe.description}
+              diet={recipe.diet}
             // eslint-disable-next-line no-underscore-dangle
-            cardID={recipe._id}
-            setState={setRecipes}
-          />
+              cardID={recipe._id}
+              setState={setRecipes}
+            />
         ))}
+        </Box>
       </Box>
+
     </>
   );
 };

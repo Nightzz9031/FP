@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '@mui/material';
+import { Box, TextField } from '@mui/material';
 import { post } from '../../helpers/plugins/https';
 
 const { uid } = require('uid');
@@ -39,20 +39,21 @@ const RecipeCreator = () => {
 
       const clickHandler = () => {
         addRecipe();
+        console.log(recipeRefs.title.current.value);
       };
 
     return (
       <Box>
-        <input id="title" type="text" ref={recipeRefs.title} placeholder="Title" />
-        <input id="title" type="text" ref={recipeRefs.servings} placeholder="Servings" />
-        <input id="calories" type="text" ref={recipeRefs.calories} placeholder="Calories per serving" />
-        <input id="sugar" type="text" ref={recipeRefs.sugar} placeholder="Sugar per serving" />
-        <input id="description" type="text" ref={recipeRefs.description} placeholder="Description" />
-        <input id="img" type="text" ref={recipeRefs.image} placeholder="Image" />
-        <input id="diet" type="text" ref={recipeRefs.diet} placeholder="Diet" />
-        <input type="text" ref={recipeRefs.ingredients} placeholder="Ingredients" />
-        <input type="text" ref={recipeRefs.recipe} placeholder="Recipe" />
-        <button onClick={clickHandler}>ADD</button>
+        <TextField id="filled-basic" type="text" inputRef={recipeRefs.title} placeholder="Title" />
+        <TextField id="filled-basic" type="text" inputRef={recipeRefs.servings} placeholder="Servings" />
+        <TextField id="filled-basic" type="text" inputRef={recipeRefs.calories} placeholder="Calories per serving" />
+        <TextField id="filled-basic" type="text" inputRef={recipeRefs.sugar} placeholder="Sugar per serving" />
+        <TextField id="filled-basic" type="text" inputRef={recipeRefs.description} placeholder="Description" />
+        <TextField id="filled-basic" type="text" inputRef={recipeRefs.image} placeholder="Image" />
+        <TextField id="filled-basic" type="text" inputRef={recipeRefs.diet} placeholder="Diet" />
+        <TextField id="filled-multiline-flexible" multiline type="text" inputRef={recipeRefs.ingredients} placeholder="Ingredients" />
+        <TextField id="filled-multiline-flexible" multiline type="text" inputRef={recipeRefs.recipe} placeholder="Recipe" />
+        <button onClick={clickHandler}>Add recipe</button>
       </Box>
     );
 };

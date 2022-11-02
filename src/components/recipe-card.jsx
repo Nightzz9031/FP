@@ -41,7 +41,7 @@ const RecipeCard = ({
 
   return (
     <Card sx={{
- width: '345px', height: 'auto', mt: '35px', mx: 'auto', border: '0.5px solid black', backgroundColor: '#cdf27e', direction: 'column',
+ width: '345px', maxHeight: '650px', mt: '35px', mx: 'auto', border: '0.5px solid black', backgroundColor: '#cdf27e', direction: 'column',
 }}
     >
       <Typography gutterBottom variant="h5" component="div">

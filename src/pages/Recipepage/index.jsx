@@ -64,8 +64,8 @@ const RecipePage = () => {
                     </p>
                   </Typography>
                   <Typography>
+                    {recipe.ingredients}
                     {recipe.recipe}
-
                   </Typography>
                 </Paper>
 

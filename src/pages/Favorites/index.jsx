@@ -3,6 +3,7 @@
 /* eslint-disable react/no-array-index-key */
 import * as React from 'react';
 import { Box } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { get, post } from '../../helpers/plugins/https';
 import ResponsiveAppBar from '../../components/appbar';
 import RecipeCard from '../../components/recipe-card';
@@ -12,6 +13,7 @@ const HomePage = () => {
   const secret = localStorage.getItem('secret');
   const [favorites, setFavorites] = React.useState([]);
 
+  const nav = useNavigate();
   const cardVisibility = '';
 
   const findUserFavorites = async () => {

@@ -72,6 +72,10 @@ const ResponsiveAppBar = ({ validateSecret }) => {
     }
   };
 
+  const goToFavs = () => {
+    nav('/favorites');
+  };
+
   React.useEffect(() => {
     validateSecret(secret, setLoginState);
     checkLoginStatus();
@@ -105,7 +109,6 @@ const ResponsiveAppBar = ({ validateSecret }) => {
               aria-label="account of current user"
               aria-controls="menu-appbar"
               aria-haspopup="true"
-              onClick={handleOpenNavMenu}
               color="inherit"
             >
               <MenuIcon />
@@ -135,12 +138,11 @@ const ResponsiveAppBar = ({ validateSecret }) => {
               ))}
             </Menu>
           </Box>
-          <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
           <Typography
             variant="h5"
             noWrap
             component="a"
-            href=""
+            href="/"
             sx={{
               mr: 2,
               display: { xs: 'flex', md: 'none' },
@@ -158,8 +160,8 @@ const ResponsiveAppBar = ({ validateSecret }) => {
             {pages.map((page) => (
               <Button
                 key={page}
-                onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: 'white', display: 'block' }}
+                onClick={() => nav('/favorites')}
               >
                 {page}
               </Button>
